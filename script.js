@@ -2,7 +2,7 @@
 const FRAME_CHECK_INTERVAL = 1000; // Check for motion every 1 second
 const MOTION_THRESHOLD = 15; // Sensitivity for motion detection (lower = more sensitive)
 // Add your Gemini API key here
-const GEMINI_API_URL = 'https://llmfoundry.straive.com/gemini/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent';
+const GEMINI_API_URL = 'https://llmfoundry.straivedemo.com/gemini/v1beta/openai/chat/completions';
 
 // DOM Elements
 const videoInput = document.getElementById('videoInput');
@@ -205,15 +205,21 @@ async function analyzeFrame(frameData, prompt) {
             },
             credentials: 'include',
             body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: prompt
-                    }, {
-                        inline_data: {
-                            mime_type: 'image/jpeg',
-                            data: base64Data
+                model: 'gemini-3-flash-preview',
+                messages: [{
+                    role: 'user',
+                    content: [
+                        {
+                            type: 'text',
+                            text: prompt
+                        },
+                        {
+                            type: 'image_url',
+                            image_url: {
+                                url: frameData
+                            }
                         }
-                    }]
+                    ]
                 }]
             })
         });
@@ -229,12 +235,12 @@ async function analyzeFrame(frameData, prompt) {
         const data = await response.json();
         console.log("API response received:", data);
         
-        if (!data.candidates || !data.candidates[0] || !data.candidates[0].content || !data.candidates[0].content.parts) {
+        if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
             console.error("Unexpected API response format:", data);
             throw new Error("Invalid API response format");
         }
         
-        return data.candidates[0].content.parts[0].text;
+        return data.choices[0].message.content;
     } catch (error) {
         console.error('API Error:', error);
         throw error;
