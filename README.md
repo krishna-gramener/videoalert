@@ -38,7 +38,6 @@ This project is an automated anomaly detection system using AI for hospital surv
     ```javascript
     const GEMINI_API_URL = 'YOUR_GEMINI_API_ENDPOINT_HERE';
     ```
-    The current placeholder is `https://llmfoundry.straive.com/gemini/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent`. Ensure this is correctly set up for API calls, including any necessary authentication or API keys if required by your specific endpoint. The script currently uses `credentials: 'include'` which might be relevant for your setup.
 
 ## Technologies Used
 
